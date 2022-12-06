@@ -163,6 +163,58 @@
 			"response": []
 		},
 		{
+			"name": "Forecast at altitude",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response must be valid and have a body\", function () {",
+							"    pm.response.to.be.ok;",
+							"    pm.response.to.be.withBody;",
+							"    pm.response.to.be.json;",
+							"});",
+							"",
+							"pm.test(\"Response must be valid data\", function () {",
+							"    pm.response.to.have.jsonBody(\"data\");",
+							"    pm.response.to.not.have.jsonBody(\"errors\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Meteum-API-Key",
+						"value": "{{apikey}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query WeatherByPoint($lat: Float!, $lon: Float!) {\n  weatherByPoint(request: { lat: $lat, lon: $lon }) {\n    forecast {\n      days(limit: 1) {\n        hours {\n          temperature\n          time\n          humidity\n          windSpeed\n          windDirection\n          windSpeedOnHeight(height: 100) {\n            windSpeed\n            height\n          }\n          temperatureOnHeight(height: 100) {\n            temperature\n            height\n          }\n          windDirectionOnHeight(height: 100) {\n            windDirection\n            height\n          }\n          windAngleOnHeight(height: 100) {\n            windAngle\n            height\n          }\n        }\n      }\n    }\n  }\n}\n",
+						"variables": "{\n    \"lat\": 52.37125,\n    \"lon\": 4.89388\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Multiple points",
 			"event": [
 				{
